@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>看看你是什么？</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        let text = '';
+
+        const input = prompt('你的名字是？');
+
+        if (input === '林文婷') {
+            text = '你是猪'
+        } else if (input === '黄东豪') {
+            text = '哈哈哈！'
+        } else {
+            text = '不认识'
+        }
+
+
+
+
+        function selectFrom(lowerValue, upperValue) {
+            let choices = upperValue - lowerValue + 1;
+            return Math.floor(Math.random() * choices + lowerValue);
+        }
+        const canvas = document.getElementById('canvas');
+
+        canvas.style.display = 'block';
+
+        const ctx = canvas.getContext('2d');
+        console.log(document.documentElement.clientWidth, document.documentElement.clientHeight)
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+        canvas.style.backgroundColor = '#000';
+        class Ball {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.r = Math.floor((Math.random() * 20) + 10);
+            }
+            rander() {
+                ctx.font = `bold ${this.r}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillStyle = this.color;
+                ctx.fillText(text, this.x, this.y);
+                // ctx.rotate(20);
+            }
+        }
+
+        class MoveBall extends Ball {
+            constructor(x, y, color) {
+                super(x, y, color);
+                this.dx = selectFrom(-5, 5);
+                this.dy = selectFrom(-5, 5);
+                this.dr = selectFrom(0.1, 1);
+            }
+            upDate() {
+                this.x += this.dx;
+                this.y += this.dy;
+                this.r -= this.dr;
+                if (this.r < 0) {
+                    this.r = 0;
+                }
+            }
+
+        }
+
+        let ballArr = [];
+        let colorArr = ['#ff1f1f', '#3fffba', '#3fb7ff', '#ffe93f', '#bf78ff', '#ff48c5', '#ffb153'];
+
+        canvas.addEventListener('touchmove', function (e) {
+            console.log(e.offsetX, e.offsetY);
+            ballArr.push(new MoveBall(event.changedTouches[0].clientX, event.changedTouches[0].clientY, colorArr[selectFrom(0, colorArr.length - 1)]));
+        })
+
+        setInterval(function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < ballArr.length; i++) {
+                ballArr[i].rander();
+                ballArr[i].upDate();
+            }
+        }, 30);
+    </script>
+</body>
+
+</html>
