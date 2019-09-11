@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Canvas</title>
+  <style type="text/css">
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="150" height="150"></canvas>
+
+  <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    ctx.beginPath();
+    ctx.moveTo(55, 30);
+    ctx.bezierCurveTo(25, 17, 15, 65, 55, 70);
+    ctx.bezierCurveTo(70, 70, 75, 130, 25, 100);
+    ctx.moveTo(90, 25);
+    ctx.lineTo(90, 114);
+    ctx.bezierCurveTo(120, 120, 150, 70, 90, 70);
+    ctx.bezierCurveTo(120, 75, 140, 25, 90, 25);
+    ctx.stroke();
+  </script>
+</body>
+
+</html>
