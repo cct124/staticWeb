@@ -20,15 +20,53 @@
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
-    ctx.beginPath();
-    ctx.moveTo(55, 30);
-    ctx.bezierCurveTo(25, 17, 15, 65, 55, 70);
-    ctx.bezierCurveTo(70, 70, 75, 130, 25, 100);
-    ctx.moveTo(90, 25);
-    ctx.lineTo(90, 114);
-    ctx.bezierCurveTo(120, 120, 150, 70, 90, 70);
-    ctx.bezierCurveTo(120, 75, 140, 25, 90, 25);
-    ctx.stroke();
+    let pa = {
+      a: [0, 0, 0, 0, 0, 0],
+      b: [0, 0, 0, 0, 0, 0],
+      c: [0, 0, 0, 0, 0, 0],
+      d: [0, 0, 0, 0, 0, 0],
+      ta: [0, 0],
+      tb: [0, 0],
+      tc: [0, 0]
+    }
+
+    let preset = {
+      a: [25, 17, 15, 65, 55, 70],
+      b: [70, 70, 75, 130, 25, 100],
+      c: [120, 120, 150, 70, 90, 70],
+      d: [120, 75, 140, 25, 90, 25],
+      ta: [55, 30],
+      tb: [90, 25],
+      tc: [90, 114]
+    }
+
+    const direction = ['ta', 'a', 'b', 'tb', 'tc', 'c', 'd']
+
+    function canvasView() {
+      ctx.clearRect(0, 0, 150, 150);
+      ctx.beginPath();
+      ctx.moveTo(pa.ta[0], pa.ta[1]);
+      ctx.bezierCurveTo(pa.a[0], pa.a[1], pa.a[2], pa.a[3], pa.a[4], pa.a[5]);
+      ctx.bezierCurveTo(pa.b[0], pa.b[1], pa.b[2], pa.b[3], pa.b[4], pa.b[5]);
+      ctx.moveTo(pa.tb[0], pa.tb[1]);
+      ctx.lineTo(pa.tc[0], pa.tc[1]);
+      ctx.bezierCurveTo(pa.c[0], pa.c[1], pa.c[2], pa.c[3], pa.c[4], pa.c[5]);
+      ctx.bezierCurveTo(pa.d[0], pa.d[1], pa.d[2], pa.d[3], pa.d[4], pa.d[5]);
+      ctx.stroke();
+    }
+
+    let inter = setInterval(() => {
+      direction.forEach(e => {
+        pa[e].forEach((n, i) => {
+          if (n < preset[e][i]) {
+            pa[e][i] = pa[e][i] + 0.1
+            canvasView()
+          } else if (~~pa.c[2] === 150 ) {
+              clearInterval(inter);
+          }
+        })
+      });
+    }, 10)
   </script>
 </body>
 
