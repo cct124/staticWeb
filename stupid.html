@@ -59,7 +59,7 @@
       direction.forEach(e => {
         pa[e].forEach((n, i) => {
           if (n < preset[e][i]) {
-            pa[e][i] = pa[e][i] + 0.1
+            pa[e][i] += 0.2
             canvasView()
           } else if (~~pa.c[2] === 150 ) {
               clearInterval(inter);
