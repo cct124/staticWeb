@@ -20,8 +20,10 @@
 
 <body>
     <canvas id="canvas"></canvas>
-    <script>
-        let text = '你是猪';
+    <script type="text/html">
+        const name = prompt('请输入你的名字')
+
+        let text = `${name}你是猪`;
 
         function selectFrom(lowerValue, upperValue) {
             let choices = upperValue - lowerValue + 1;
@@ -82,6 +84,119 @@
         setInterval(function () {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = 0; i < ballArr.length; i++) {
+                ballArr[i].rander();
+                ballArr[i].upDate();
+            }
+        }, 30);
+    </script>
+    <script>
+        "use strict";
+
+        function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+        function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+        function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+        function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+        function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+        function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+        function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return !!right[Symbol.hasInstance](left); } else { return left instanceof right; } }
+
+        function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+        function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+        function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+        var name = prompt('请输入你的名字');
+        var text = "".concat(name, "\u4F60\u662F\u732A");
+
+        function selectFrom(lowerValue, upperValue) {
+            var choices = upperValue - lowerValue + 1;
+            return Math.floor(Math.random() * choices + lowerValue);
+        }
+
+        var canvas = document.getElementById('canvas');
+        canvas.style.display = 'block';
+        var ctx = canvas.getContext('2d');
+        console.log(document.documentElement.clientWidth, document.documentElement.clientHeight);
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+        canvas.style.backgroundColor = '#000';
+
+        var Ball =
+            /*#__PURE__*/
+            function () {
+                function Ball(x, y, color) {
+                    _classCallCheck(this, Ball);
+
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.r = Math.floor(Math.random() * 20 + 10);
+                }
+
+                _createClass(Ball, [{
+                    key: "rander",
+                    value: function rander() {
+                        ctx.font = "bold ".concat(this.r, "px Arial");
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillStyle = this.color;
+                        ctx.fillText(text, this.x, this.y); // ctx.rotate(20);
+                    }
+                }]);
+
+                return Ball;
+            }();
+
+        var MoveBall =
+            /*#__PURE__*/
+            function (_Ball) {
+                _inherits(MoveBall, _Ball);
+
+                function MoveBall(x, y, color) {
+                    var _this;
+
+                    _classCallCheck(this, MoveBall);
+
+                    _this = _possibleConstructorReturn(this, _getPrototypeOf(MoveBall).call(this, x, y, color));
+                    _this.dx = selectFrom(-5, 5);
+                    _this.dy = selectFrom(-5, 5);
+                    _this.dr = selectFrom(0.1, 1);
+                    return _this;
+                }
+
+                _createClass(MoveBall, [{
+                    key: "upDate",
+                    value: function upDate() {
+                        this.x += this.dx;
+                        this.y += this.dy;
+                        this.r -= this.dr;
+
+                        if (this.r < 0) {
+                            this.r = 0;
+                        }
+                    }
+                }]);
+
+                return MoveBall;
+            }(Ball);
+
+        var ballArr = [];
+        var colorArr = ['#ff1f1f', '#3fffba', '#3fb7ff', '#ffe93f', '#bf78ff', '#ff48c5', '#ffb153'];
+        canvas.addEventListener('touchmove', function (e) {
+            console.log(e.offsetX, e.offsetY);
+            ballArr.push(new MoveBall(event.changedTouches[0].clientX, event.changedTouches[0].clientY, colorArr[selectFrom(0, colorArr.length - 1)]));
+        });
+        setInterval(function () {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (var i = 0; i < ballArr.length; i++) {
                 ballArr[i].rander();
                 ballArr[i].upDate();
             }
