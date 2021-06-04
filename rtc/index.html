@@ -16,14 +16,17 @@
       muted
       playsinline
     ></video>
-    <button id="play">start</button>
+    <button id="start">start</button>
     <button id="stop">stop</button>
     <video width="200" height="100" id="video_record" controls></video>
+
+    <p id="video_info"></p>
     <script>
       const video = document.getElementById("video");
       const video_record = document.getElementById("video_record");
-      const play = document.getElementById("play");
-      const stopBtn = document.getElementById("stop");
+      const start = document.getElementById("start");
+      const stopRecord = document.getElementById("stop");
+      const videoInfo = document.getElementById("video_info");
 
       async function init() {
         const mediaOptions = {
@@ -68,19 +71,29 @@
         video.srcObject = stream;
         recordVideo = RecordRTC(stream, {
           type: "video",
+          mimeType: "video/mp4",
         });
       });
 
-      play.addEventListener("click", () => {
+      start.addEventListener("click", () => {
         recordVideo.startRecording();
       });
 
-      stopBtn.addEventListener("click", () => {
+      stopRecord.addEventListener("click", () => {
+        console.log(recordVideo);
         recordVideo.stopRecording(function (url) {
           video_record.src = url;
 
+          const blob = recordVideo.getBlob();
+
+          videoInfo.innerText = `
+           size: ${blob.size / (1024 * 1024)} MB
+           type: ${blob.type}
+          `;
+
           const file = new FileReader();
-          file.readAsDataURL(recordVideo.getBlob());
+
+          file.readAsDataURL(blob);
 
           file.onload = (e) => {
             const base64 = e.target.result;
