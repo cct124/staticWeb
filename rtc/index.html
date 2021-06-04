@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    <title>Web RTC</title>
+  </head>
+  <body>
+    <video
+      width="100"
+      height="100"
+      id="video"
+      autoplay
+      muted
+      playsinline
+    ></video>
+    <button id="play">start</button>
+    <button id="stop">stop</button>
+    <video width="200" height="100" id="video_record" controls></video>
+    <script>
+      const video = document.getElementById("video");
+      const video_record = document.getElementById("video_record");
+      const play = document.getElementById("play");
+      const stopBtn = document.getElementById("stop");
+
+      async function init() {
+        const mediaOptions = {
+          video: {
+            width: 300,
+            height: 300,
+            facingMode: "user",
+            frameRate: { ideal: 10, max: 15 },
+          },
+        };
+
+        let mediaStreamTrack = null;
+        // 获取 WebRTC 媒体视频流
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          // 最新标准API
+          mediaStreamTrack = await navigator.mediaDevices
+            .getUserMedia(mediaOptions)
+            .catch(this.mediaErrorCallback);
+        } else if (navigator.webkitGetUserMedia) {
+          // webkit内核浏览器
+          mediaStreamTrack = await navigator
+            .webkitGetUserMedia(mediaOptions)
+            .catch(this.mediaErrorCallback);
+        } else if (navigator.mozGetUserMedia) {
+          // Firefox浏览器
+          mediaStreamTrack = await navigator
+            .mozGetUserMedia(mediaOptions)
+            .catch(this.mediaErrorCallback);
+        } else if (navigator.getUserMedia) {
+          // 旧版API
+          mediaStreamTrack = await navigator
+            .getUserMedia(mediaOptions)
+            .catch(this.mediaErrorCallback);
+        }
+
+        return mediaStreamTrack;
+      }
+
+      let recordVideo;
+
+      init().then((stream) => {
+        video.srcObject = stream;
+        recordVideo = RecordRTC(stream, {
+          type: "video",
+        });
+      });
+
+      play.addEventListener("click", () => {
+        recordVideo.startRecording();
+      });
+
+      stopBtn.addEventListener("click", () => {
+        recordVideo.stopRecording(function (url) {
+          video_record.src = url;
+
+          const file = new FileReader();
+          file.readAsDataURL(recordVideo.getBlob());
+
+          file.onload = (e) => {
+            const base64 = e.target.result;
+            const index = base64.match(/data:.+base64,/)[0].length;
+            const result = base64.substr(index);
+            console.log(result);
+          };
+        });
+      });
+    </script>
+  </body>
+</html>
