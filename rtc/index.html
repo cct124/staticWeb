@@ -87,7 +87,7 @@
           const blob = recordVideo.getBlob();
 
           videoInfo.innerText = `
-           size: ${blob.size / (1024 * 1024)} MB
+           size: ${Math.round(blob.size / (1024 * 1024))} MB
            type: ${blob.type}
           `;
 
